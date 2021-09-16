@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
+    // не понимаю, внедрение через конструктор не идет ( если через конструктор внедряю, ошибка идет в классе с PostConstruct )
     @Autowired
     private PasswordEncoder passwordEncoder;
 
