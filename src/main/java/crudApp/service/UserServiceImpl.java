@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -31,6 +30,7 @@ public class UserServiceImpl implements UserService {
         this.userDao = userDao;
         this.roleDao = roleDao;
     }
+
     @Override
     public List<User> getAllUsers() {
         return userDao.getAllUsers();
@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
                     .map(roleDao::getRoleById)
                     .collect(Collectors.toSet());
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(containerRoles);
         userDao.add(user);
     }
@@ -63,15 +64,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User user, Long [] roles) {
-        Set <Role> collectionRoles = new HashSet<>();
-        if (roles == null) {
-            collectionRoles.add(roleDao.getRoleById(2L));
-        } else {
-            collectionRoles = Arrays.stream(roles)
+        if (roles != null) {
+            user.setRoles(
+                    Arrays.stream(roles)
                     .map(roleDao::getRoleById)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toSet())
+            );
         }
-        user.setRoles(collectionRoles);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.update(user);
     }
 
@@ -79,10 +79,6 @@ public class UserServiceImpl implements UserService {
     public User getById(int id) {
         return userDao.getById(id);
     }
-
-    // «Пользователь» – это просто Object. В большинстве случаев он может быть
-    //  приведен к классу UserDetails.
-    // Для создания UserDetails используется интерфейс UserDetailsService, с единственным методом:
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -92,5 +88,4 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
-
 }

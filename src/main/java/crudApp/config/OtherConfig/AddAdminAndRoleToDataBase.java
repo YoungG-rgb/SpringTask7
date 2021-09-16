@@ -13,8 +13,8 @@ import java.util.Set;
 @Component
 public class AddAdminAndRoleToDataBase {
 
-    private UserService userService;
-    private RoleService roleService;
+    private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
     public AddAdminAndRoleToDataBase(UserService userService, RoleService roleService){
@@ -29,11 +29,11 @@ public class AddAdminAndRoleToDataBase {
         Role roleUser = new Role("ROLE_USER");
         roleService.save(roleAdmin);
         roleService.save(roleUser);
-        // For Admin
+        // set for Admin
         Set<Role> setRolesAdminAndUser = new HashSet<>();
         setRolesAdminAndUser.add(roleAdmin);
         setRolesAdminAndUser.add(roleUser);
-        // For User
+        // set for User
         Set<Role> setRolesUser = new HashSet<>();
         setRolesUser.add(roleUser);
         // Admin
